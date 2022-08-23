@@ -5,7 +5,20 @@ import Car from '../models/carModel.js';
 
 // GET
 carRouter.get('/', async (req, res) => {
-    const cars = await Car.find();
+
+    
+    let toFind = {}
+    if (req.query.marca != undefined && req.query.ano != undefined) {
+        toFind.marca = req.query.marca
+        toFind.ano = req.query.ano
+    } else if (req.query.marca == undefined && req.query.ano != undefined) {
+        toFind.ano = req.query.ano
+    } else if (req.query.marca != undefined && req.query.ano == undefined) {
+        toFind.marca = req.query.marca;
+        console.log(toFind);
+    }
+    const cars = await Car.find(toFind);
+
     res.send(cars);      
 })
 carRouter.get('/:id', async (req, res) => {
@@ -16,6 +29,7 @@ carRouter.get('/:id', async (req, res) => {
         console.log(car)
     }
 })
+
 // POST
 carRouter.post('/', async (req, res) => { 
     let newCar = await new Car(req.body);
